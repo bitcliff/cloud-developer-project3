@@ -48,6 +48,7 @@ router.get('/', async (req: Request, res: Response) => {
 router.get('/:id',
     async (req: Request, res: Response) => {
       const {id} = req.params;
+      logMessage(`get feed ${id}`);
       const item = await FeedItem.findByPk(id);
       res.send(item);
     });
@@ -57,7 +58,9 @@ router.get('/signed-url/:fileName',
     requireAuth,
     async (req: Request, res: Response) => {
       const {fileName} = req.params;
+      logMessage(`get signed url for new file ${fileName}`);
       const url = AWS.getPutSignedUrl(fileName);
+      logMessage(`signed url for new file ${fileName} is ${url}`);
       res.status(201).send({url: url});
     });
 
@@ -67,6 +70,8 @@ router.post('/',
     async (req: Request, res: Response) => {
       const caption = req.body.caption;
       const fileName = req.body.url; // same as S3 key name
+
+      logMessage(`creating a new fieed with ${fileName} and ${caption}`);
 
       if (!caption) {
         return res.status(400).send({message: 'Caption is required or malformed.'});

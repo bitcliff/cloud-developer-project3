@@ -45,6 +45,8 @@ import {V0_FEED_MODELS} from './controllers/v0/model.index';
   // Start the Server
   app.listen( port, () => {
     console.log( `server running ${config.url}` );
+    console.log( `server using bucket ${config.aws_media_bucket} in ${config.aws_region}`);
+    console.log( `server connected to database ${config.database}`);
     console.log( `press CTRL+C to stop server` );
   } );
 })();

@@ -46,6 +46,10 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
   });
 }
 
+export function logMessage(m: String) {
+  console.log(new Date().toLocaleString() + `: ${m}`);
+}
+
 router.get('/verification',
     requireAuth,
     async (req: Request, res: Response) => {
@@ -55,6 +59,8 @@ router.get('/verification',
 router.post('/login', async (req: Request, res: Response) => {
   const email = req.body.email;
   const password = req.body.password;
+
+  logMessage(`${email} trys to login`);
 
   if (!email || !EmailValidator.validate(email)) {
     return res.status(400).send({auth: false, message: 'Email is required or malformed.'});
@@ -76,6 +82,7 @@ router.post('/login', async (req: Request, res: Response) => {
   }
 
   const jwt = generateJWT(user);
+  logMessage(`${email} logged in successfully`);
   res.status(200).send({auth: true, token: jwt, user: user.short()});
 });
 
@@ -83,7 +90,7 @@ router.post('/login', async (req: Request, res: Response) => {
 router.post('/', async (req: Request, res: Response) => {
   const email = req.body.email;
   const plainTextPassword = req.body.password;
-
+  logMessage(`registration for ${email}`);
   if (!email || !EmailValidator.validate(email)) {
     return res.status(400).send({auth: false, message: 'Email is missing or malformed.'});
   }
@@ -108,6 +115,7 @@ router.post('/', async (req: Request, res: Response) => {
 
 
   const jwt = generateJWT(savedUser);
+  logMessage(`user for ${email} registrated`);
   res.status(201).send({token: jwt, user: savedUser.short()});
 });
 
